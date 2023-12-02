@@ -26,7 +26,7 @@ def get_numbers(lines):
             if char.isdigit():
                 digits += char
             index = is_a_digit_word(line, i)
-            if index != -1 :
+            if index != -1:
                 digits += convert_letter_to_dig(index)
         if digits:
             numbers.append(digits)
@@ -48,17 +48,17 @@ def get_two_digits(digits):
 def is_a_digit_word(line, index):
     line = line[index:]
     for i, number in enumerate(NUMBERS):
-        if strncmp(line, number, len(number)):
+        if matches(line, number, len(number)):
             return i
     return -1
 
 
 def convert_letter_to_dig(index):
     return str(index + 1)
-    
 
-def strncmp(s1, s2, size):
-    return s1[:size] == s2
+
+def matches(s1, s2, size):
+    return s1[:size] == s2[:size]
 
 
 main()
