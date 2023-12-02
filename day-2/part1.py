@@ -66,13 +66,4 @@ def get_subsets(raw_revealed: List[str]) -> List[Dict[str, int]]:
     return subsets
 
 
-def get_data_digits(data):
-    digits = ""
-    i = 0
-    while data[i].isdigit():
-        digits += data[i]
-        i += 1
-    return digits
-
-
 main()
