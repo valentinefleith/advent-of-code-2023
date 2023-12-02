@@ -66,4 +66,5 @@ def get_subsets(raw_revealed: List[str]) -> List[Dict[str, int]]:
     return subsets
 
 
-main()
+if __name__ == "__main__":
+    main()
