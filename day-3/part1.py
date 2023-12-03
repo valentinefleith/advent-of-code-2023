@@ -8,8 +8,11 @@ def main():
     height, width, data = parse_map(argv[1])
     map = Map(height, width, data)
     digits = map.get_digits()
-    for digit in digits:
-        print(digit.digits)
+    adjacent_to_symbol = map.get_adjacent_to_symbols(digits)
+    result = 0
+    for dig in adjacent_to_symbol:
+        result += int(dig.digits)
+    print(result)
 
 
 class Digits:
@@ -18,8 +21,6 @@ class Digits:
         self.x_pos = x_pos
         self.y_pos = y_pos
 
-#    def to_be_kept(self):
-
 
 class Map:
     def __init__(self, height, width, data):
@@ -27,7 +28,7 @@ class Map:
         self.width = width
         self.data = data
 
-    def get_digits(self):
+    def get_digits(self) -> List[Digits]:
         digits = []
         for i in range(self.height):
             j = 0
@@ -47,6 +48,32 @@ class Map:
             y.append(y_pos)
             y_pos += 1
         return Digits(digits, x_pos, y)
+
+    def get_adjacent_to_symbols(self, digits: List[Digits]) -> List[Digits]:
+        adjacents = []
+        for digit in digits:
+            if self.is_valid(digit):
+                adjacents.append(digit)
+        return adjacents
+
+    def is_valid(self, digit: Digits) -> bool:
+        i = digit.x_pos - 1
+        while i <= digit.x_pos + 1:
+            if i < 0:
+                i += 1
+            if i >= self.height:
+                break
+            j = digit.y_pos[0] - 1
+            while j <= digit.y_pos[-1] + 1:
+                if j < 0:
+                    j += 1
+                if j >= self.width:
+                    continue
+                if not self.data[i][j].isdigit() and self.data[i][j] not in ".\n":
+                    return True
+                j += 1
+            i += 1
+        return False
 
 
 def parse_map(path):
