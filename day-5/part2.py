@@ -1,5 +1,6 @@
 from sys import argv, exit
 from typing import List
+import numpy as np
 
 from part1 import parse_maps, Map, Conversion 
 
@@ -8,25 +9,29 @@ def main():
     if len(argv) != 2:
         exit("Il faut l'input en argument.")
     pairs = parse_first_line(argv[1])
+    maps = parse_maps(argv[1])
     intervals = []
     for start, number in pairs.items():
         intervals.append([start, start + number])
     print(intervals)
-    locations = convert_intervals_to_locations(intervals, argv[1])
-    print(min(locations))
+    locations = []
+    for interval in intervals:
+        locations.append(convert_intervals_to_locations(interval, maps))
+    print(locations)
+    #locations = np.array([locations])
+    #print(locations.min())
 
 
-def convert_intervals_to_locations(intervals, path):
-    new_intervals = intervals
-    maps = parse_maps(path)
-    for map in maps:
-        for conversion in map.data:
-            intervals = new_intervals
-            for interval in intervals:
-                print(interval)
-                case = get_interval_case(interval, conversion)
-                print(case)
-                new_intervals.extend(get_new_intervals(interval, case, conversion))
+def convert_intervals_to_locations(interval, maps):
+    new_intervals = [interval]
+    for inter in new_intervals:
+        for map in maps:
+            interval = new_intervals
+            new_intervals = []
+            for conversion in map.data:
+                print(f"interval : {inter}")
+                case = get_interval_case(inter, conversion)
+                new_intervals.append(get_new_intervals(inter, case, conversion))
     return new_intervals
 
 
