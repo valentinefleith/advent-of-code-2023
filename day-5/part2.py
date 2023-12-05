@@ -6,7 +6,10 @@ def main():
     if len(argv) != 2:
         exit("Il faut l'input en argument.")
     pairs = parse_first_line(argv[1])
-    print(pairs)
+    intervals = []
+    for start, number in pairs.items():
+        intervals.append((start, start + number))
+    print(intervals)
     candidates = []
     for start, number in pairs.items():
         numbers_to_test = []
@@ -15,7 +18,6 @@ def main():
         locations = []
         for seed in numbers_to_test:
             locations.append(convert_seed_to_location(seed, argv[1]))
-            print(locations)
         candidates.append(min(locations))
     print(min(candidates))
 
