@@ -1,6 +1,8 @@
 from sys import argv, exit
 from typing import List
 
+from part1 import parse_maps, Map, Conversion 
+
 
 def main():
     if len(argv) != 2:
@@ -8,35 +10,51 @@ def main():
     pairs = parse_first_line(argv[1])
     intervals = []
     for start, number in pairs.items():
-        intervals.append((start, start + number))
+        intervals.append([start, start + number])
     print(intervals)
-    candidates = []
-    for start, number in pairs.items():
-        numbers_to_test = []
-        for i in range(number):
-            numbers_to_test.append(start + i)
-        locations = []
-        for seed in numbers_to_test:
-            locations.append(convert_seed_to_location(seed, argv[1]))
-        candidates.append(min(locations))
-    print(min(candidates))
+    locations = convert_intervals_to_locations(intervals, argv[1])
+    print(min(locations))
 
 
-
-def convert_seed_to_location(seed, path):
-    location = seed
+def convert_intervals_to_locations(intervals, path):
+    new_intervals = intervals
     maps = parse_maps(path)
     for map in maps:
         for conversion in map.data:
-            if location in range(conversion.src, conversion.src + conversion.quantity):
-                location = convert_location(location, conversion)
-                break
-    return location
+            intervals = new_intervals
+            for interval in intervals:
+                print(interval)
+                case = get_interval_case(interval, conversion)
+                print(case)
+                new_intervals.extend(get_new_intervals(interval, case, conversion))
+    return new_intervals
 
 
-def convert_location(location, conversion):
-    location += (conversion.dest - conversion.src)
-    return location
+def get_new_intervals(interval, case, conversion):
+    transformation = conversion.dest - conversion.src
+    if case == 1:
+        return [interval[0] + transformation, interval[1] + transformation]
+    if case == 2:
+        return [[interval[0] + transformation, conversion.src + conversion.quantity - 1 + transformation], [conversion.src + conversion.quantity, interval[1]]]
+    if case == 3:
+        return [[interval[0], conversion.src - 1], [conversion.src + transformation, interval[1] + transformation]]
+    if case == 4:
+        return [[interval[0], conversion.src - 1], [conversion.src + transformation, conversion.src + conversion.quantity - 1+ transformation], [conversion.src + conversion.quantity, interval[1]]]
+    return interval
+
+
+def get_interval_case(interval, conversion):
+    if conversion.src <= interval[0]:
+        if conversion.src + conversion.quantity >= interval[1]:
+            return 1
+        if interval[0] < conversion.src + conversion.quantity < interval[1]:
+            return 2
+    if interval[0] < conversion.src < interval[1]:
+        if conversion.src + conversion.quantity >= interval[1]:
+            return 3
+        if conversion.src + conversion.quantity < interval[1]:
+            return 4
+    return 0
 
 
 def parse_first_line(path):
@@ -48,51 +66,6 @@ def parse_first_line(path):
     for i in range(0, len(converted) - 1, 2):
         pairs[converted[i]] = converted[i + 1]
     return pairs
-
-
-class Conversion:
-    def __init__(self, dest, src, quantity):
-        self.dest = dest
-        self.src = src
-        self.quantity = quantity
-
-
-class Map:
-    def __init__(self, name, data: List[Conversion]):
-        self.name = name
-        self.data = data
-
-
-def parse_maps(path):
-    maps = []
-    with open(path, "r") as file:
-        almanach = file.readlines()
-    for index, line in enumerate(almanach):
-        if index == 0:
-            continue
-        if ":" in line:
-            index_end_of_data = get_index_end_of_data(almanach, index)
-            name = line.split()[0]
-            data = get_list_of_conversions(almanach, index, index_end_of_data)
-            maps.append(Map(name, data))
-    return maps
-
-
-def get_list_of_conversions(almanach, index, index_end):
-    data = []
-    for i in range(index + 1, index_end):
-        line = almanach[i].split()
-        dest = int(line[0])
-        src = int(line[1])
-        quantity = int(line[2])
-        data.append(Conversion(dest, src, quantity))
-    return data
-
-
-def get_index_end_of_data(almanach, index):
-    while index < len(almanach) and almanach[index] != "\n":
-        index += 1
-    return index
 
 
 if __name__ == "__main__":
