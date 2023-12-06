@@ -1,6 +1,7 @@
 # Advent of code 2023
 
-![image](https://github.com/valentinefleith/advent-of-code-2023/assets/125041345/10c02bfd-1357-4bfd-a29d-e20549391573)
+![image](https://github.com/valentinefleith/advent-of-code-2023/assets/125041345/ee33b8ff-a55a-4f30-ba37-e4b869f9ed37)
+
 
 
 
