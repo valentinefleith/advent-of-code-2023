@@ -15,13 +15,6 @@ def main():
     print(total)
 
 
-class Test:
-    def __init__(self, holding_time, travelled_distance, won):
-        self.holding_time = holding_time
-        self.travelled_distance = travelled_distance
-        self.won = won
-
-
 class Race:
     def __init__(self, time, record):
         self.time = time
@@ -34,7 +27,6 @@ class Race:
             if travelled_distance > self.record:
                 holding_times.append(holding_time)
         return holding_times
-
 
 
 def parse_file(path):
