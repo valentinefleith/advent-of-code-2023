@@ -57,14 +57,6 @@ def sort_hands_by_strength(hands):
     return hands
 
 
-def are_misordered(hand1, hand2):
-    for i in range(5):
-        if CARDS.index(hand1.cards[i]) > CARDS.index(hand2.cards[i]):
-            print(hand1.cards[i], hand2.cards[i])
-            return True
-    return False
-
-
 def parse_hand_type(cards):
     if cards == len(cards) * cards[0]:
         return Type(TYPES[0], 0)
