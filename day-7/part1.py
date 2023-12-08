@@ -1,5 +1,4 @@
 from sys import argv, exit
-from typing import List
 
 TYPES = ["five of a kind",
          "four of a kind",
@@ -19,6 +18,7 @@ def main():
     sorted_hands = sort_hands_by_strength(hands)
     total_winning = 0
     for i, hand in enumerate(sorted_hands):
+        print(hand.cards, hand.h_type.strength, i + 1)
         total_winning += (i + 1) * int(hand.bid)
     print(total_winning)
 
@@ -53,37 +53,17 @@ def load_input(path):
 
 
 def sort_hands_by_strength(hands):
-    hands.sort(key=lambda x: x.h_type.strength, reverse=True)
-    swap_counter = -1
-    #while swap_counter != 0:
-        #swap_counter = 0
-    for a in range(len(hands)):
-        for i in range(len(hands) - 1):
-            if hands[i].h_type.strength == hands[i + 1].h_type.strength:
-                for j in range(5):
-                    if CARDS.index(hands[i].cards[j]) < CARDS.index(hands[i + 1].cards[j]):
-                        hands[i], hands[i + 1] = hands[i + 1], hands[i]
-                        break
+    hands.sort(key=lambda x: (x.h_type.strength, [CARDS.index(card) for card in x.cards]), reverse=True)
     return hands
 
 
+def are_misordered(hand1, hand2):
+    for i in range(5):
+        if CARDS.index(hand1.cards[i]) > CARDS.index(hand2.cards[i]):
+            print(hand1.cards[i], hand2.cards[i])
+            return True
+    return False
 
-# def parse_hand_type(cards):
-#     if cards == len(cards) * cards[0]:
-#         return Type(TYPES[6], 7)
-#     if cards.count(cards[0]) == 4 or cards.count(cards[1]) == 4:
-#         return Type(TYPES[5], 6)
-#     nb_of_different_cards = len(set(cards))
-#     if nb_of_different_cards == 2:
-#         return Type(TYPES[4], 5)
-#     for i in range(3):
-#         if cards.count(cards[i]) == 3:
-#             return Type(TYPES[3], 4)
-#     if nb_of_different_cards == 3:
-#         return Type(TYPES[2], 3)
-#     if nb_of_different_cards == 2:
-#         return Type(TYPES[1], 2)
-#     return Type(TYPES[0], 1)
 
 def parse_hand_type(cards):
     if cards == len(cards) * cards[0]:
@@ -97,6 +77,7 @@ def parse_hand_type(cards):
         if cards.count(cards[i]) == 3:
             return Type(TYPES[3], 3)
     return Type(TYPES[nb_of_different_cards + 1], nb_of_different_cards + 1)
+
 
 if __name__ == "__main__":
     main()
