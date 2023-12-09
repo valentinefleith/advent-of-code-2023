@@ -7,7 +7,7 @@ def main():
     histories = parse_file(argv[1])
     result = 0
     for history in histories:
-        result += find_next_value(history)
+        result += find_previous_value(history)
     print(result)
 
 
@@ -15,7 +15,7 @@ def is_list_0(lst):
     return all(elem == 0 for elem in lst)
 
 
-def find_next_value(history):
+def find_previous_value(history):
     sequences = []
     current = [int(nb) for nb in history.split()]
     while not is_list_0(current):
