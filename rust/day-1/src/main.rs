@@ -9,12 +9,7 @@ fn get_sum_of_last_digits(lines: Vec<String>) -> u32 {
         let digits: Vec<u32> = line.chars().flat_map(|char| char.to_digit(10)).collect();
         all_digits.push(digits[0] * 10 + digits[digits.len() - 1]);
     }
-    let mut result = 0;
-    for nb in all_digits {
-        result += nb;
-    }
-    result
-    //println!("{:?}", all_digits.iter().sum());
+    all_digits.iter().sum()
 }
 
 fn get_lines(filename: String) -> Vec<String> {
@@ -28,6 +23,5 @@ fn get_lines(filename: String) -> Vec<String> {
 fn main() {
     let input_path: String = env::args().nth(1).expect("Argument required.");
     let lines = get_lines(input_path);
-    //get_sum_of_last_digits(lines);
     println!("{}", get_sum_of_last_digits(lines));
 }
