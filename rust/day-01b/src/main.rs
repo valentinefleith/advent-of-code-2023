@@ -27,7 +27,7 @@ fn get_sum_of_last_digits(lines: Vec<String>) -> u32 {
     let mut all_digits: Vec<u32> = Vec::new();
     for line in lines {
         let digits: Vec<u32> = get_digits_in_line(line);
-        all_digits.push(digits[0] * 10 + digits[digits.len() - 1]);
+        all_digits.push(digits.first().expect("Error.") * 10 + digits.last().expect("Error."));
     }
     println!("{:?}", all_digits);
     all_digits.iter().sum()
