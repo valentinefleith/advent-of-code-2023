@@ -22,4 +22,5 @@
 
 ## Rust
 
-- **Day 1** : [`Part1`](/rust/day-1/src/main.rs) :star:
+- **Day 1** : [`Part1`](/rust/day-1a/src/main.rs) :star:
+- **Day 2** : [`Part1`](/rust/day-2a/src/main.rs) :star:

@@ -16,19 +16,23 @@ struct Round {
     blue: i32,
 }
 
+impl Round {
+    fn is_set_valid(&self) -> bool {
+        !(self.red > 12 || self.green > 13 || self.blue > 14)
+    }
+}
+
 #[derive(Debug)]
 struct Game {
     id: u32,
     sets: Vec<Round>,
 }
 
-//impl Game {
-//    fn is_valid(&self) -> bool {
-//        for set in self.sets {
-//
-//        }
-//    }
-//}
+impl Game {
+    fn is_game_valid(&self) -> bool {
+        !self.sets.iter().any(|set| !set.is_set_valid())
+    }
+}
 
 fn round_constructor(round_data: &str) -> Round {
     let mut red = 0;
@@ -49,13 +53,12 @@ fn round_constructor(round_data: &str) -> Round {
 }
 
 fn game_constructor(game_summaries: Vec<String>) -> Game {
-    println!("{:?}", game_summaries);
     let id: u32 = game_summaries[0]
         .trim()
-        .chars()
+        .split_whitespace()
         .last()
-        .unwrap()
-        .to_digit(10)
+        .expect("Error")
+        .parse()
         .expect("Could not parse game ID.");
     let sets: Vec<Round> = game_summaries[1]
         .trim()
@@ -64,7 +67,6 @@ fn game_constructor(game_summaries: Vec<String>) -> Game {
         .collect();
     Game { id, sets }
 }
-
 
 fn build_game_list(lines: Vec<String>) -> Vec<Game> {
     lines
@@ -85,5 +87,10 @@ fn main() {
     let input_path: String = env::args().nth(1).expect("Argument required.");
     let lines = get_lines(input_path);
     let games = build_game_list(lines);
-    println!("{:?}", games);
+    let result: u32 = games
+        .iter()
+        .filter(|g| g.is_game_valid())
+        .map(|correct| correct.id)
+        .sum();
+    println!("{result}");
 }
