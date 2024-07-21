@@ -3,11 +3,11 @@ use std::{
     io::{prelude::*, BufReader},
 };
 
-enum Color {
-    Red = 12,
-    Green = 13,
-    Blue = 14,
-}
+//enum Color {
+//Red = 12,
+//Green = 13,
+//Blue = 14,
+//}
 
 #[derive(Debug)]
 struct Round {
@@ -18,7 +18,7 @@ struct Round {
 
 #[derive(Debug)]
 struct Game {
-    id: i32,
+    id: u32,
     sets: Vec<Round>,
 }
 
@@ -30,34 +30,47 @@ struct Game {
 //    }
 //}
 
-
-//fn round_constructor
-
-fn game_constructor(raw_rounds: Vec<&str>) -> Vec<Vec<Vec<&str>>> {
-    let game: Vec<Vec<Vec<&str>>> = raw_rounds
-        .iter()
-        .map(|rounds| {
-            rounds
-                .split(",")
-                .map(|c| c.trim().split(" ").collect())
-                .collect()
-        })
-        .collect();
-    println!("{:?}", game);
-    game
+fn round_constructor(round_data: &str) -> Round {
+    let mut red = 0;
+    let mut green = 0;
+    let mut blue = 0;
+    for reveal in round_data.split(',') {
+        let colors: Vec<&str> = reveal.split_whitespace().collect();
+        let nb: i32 = colors[0].parse().expect("Could not parse nb of cubes.");
+        let color = colors[1];
+        match color {
+            "red" => red += nb,
+            "green" => green += nb,
+            "blue" => blue += nb,
+            _ => continue,
+        }
+    }
+    Round { red, green, blue }
 }
 
-fn build_game_list(lines: Vec<String>) {
-    let games: Vec<Vec<&str>> = lines
-        .iter()
-        .filter_map(|game| game.split(":").nth(1))
-        .map(|round| round.split(";").collect())
+fn game_constructor(game_summaries: Vec<String>) -> Game {
+    println!("{:?}", game_summaries);
+    let id: u32 = game_summaries[0]
+        .trim()
+        .chars()
+        .last()
+        .unwrap()
+        .to_digit(10)
+        .expect("Could not parse game ID.");
+    let sets: Vec<Round> = game_summaries[1]
+        .trim()
+        .split(';')
+        .map(|round| round_constructor(round))
         .collect();
-    let games_list: Vec<Vec<Vec<Vec<&str>>>> = games
+    Game { id, sets }
+}
+
+
+fn build_game_list(lines: Vec<String>) -> Vec<Game> {
+    lines
         .iter()
-        .map(|game| game_constructor(game.to_vec()))
-        .collect();
-    //println!("{:?}", games);
+        .map(|line| game_constructor(line.split(':').map(String::from).collect()))
+        .collect()
 }
 
 fn get_lines(filename: String) -> Vec<String> {
@@ -72,4 +85,5 @@ fn main() {
     let input_path: String = env::args().nth(1).expect("Argument required.");
     let lines = get_lines(input_path);
     let games = build_game_list(lines);
+    println!("{:?}", games);
 }
