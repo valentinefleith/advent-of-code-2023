@@ -3,11 +3,6 @@ use std::{
     io::{prelude::*, BufReader},
 };
 
-//enum Color {
-//Red = 12,
-//Green = 13,
-//Blue = 14,
-//}
 
 #[derive(Debug)]
 struct Round {
